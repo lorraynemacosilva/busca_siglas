@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca Siglas- SEI Pedro Leopoldo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .indent-level-1 { padding-left: 2rem; }
+        .indent-level-2 { padding-left: 4rem; }
+        .indent-level-3 { padding-left: 6rem; }
+        /* Add more levels if needed */
+        .chevron {
+            transition: transform 0.2s ease-in-out;
+        }
+        .chevron-down {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+<div class="container mx-auto bg-white rounded-lg shadow-xl p-8 space-y-8">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Busca Siglas -  SEI Pedro Leopoldo</h1>
+        <p class="mt-2 text-lg text-gray-600">Busque e compreenda as siglas das unidades SEI.</p>
+    </header>
+
+    <main class="space-y-6">
+        <!-- Explanation Section -->
+        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 shadow-sm">
+            <h2 class="text-xl font-semibold text-blue-800 mb-4">Lógica de Criação das Siglas</h2>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                <li><strong class="text-blue-700">Prefixos:</strong> Siglas para unidades subordinadas começam com um prefixo, como <span class="font-mono bg-blue-100 p-1 rounded-sm">SECA</span> para Secretarias Adjuntas, <span class="font-mono bg-blue-100 p-1 rounded-sm">COO</span> para Coordenadorias, <span class="font-mono bg-blue-100 p-1 rounded-sm">DIR</span> para Diretorias, <span class="font-mono bg-blue-100 p-1 rounded-sm">GER</span> para Gerências, e <span class="font-mono bg-blue-100 p-1 rounded-sm">NUC</span> para Núcleos.</li>
+                <li><strong class="text-blue-700">Duplicidade de Unidades:</strong> Para unidades com o mesmo nome em secretarias diferentes (ex: Assessoria de Comunicação), as duas últimas ou a última letra da sigla da secretaria são adicionadas como um prefixo (ex: <span class="font-mono bg-blue-100 p-1 rounded-sm">GF</span>ASSCOM para Secretaria de Gestão e Finanças e <span class="font-mono bg-blue-100 p-1 rounded-sm">I</span>ASSCOM para Secretaria de Infraestrutura).</li>
+                <li><strong class="text-blue-700">Coordenadorias Administrativas:</strong> Coordenadorias administrativas e de assessoramento recebem as duas últimas letras da sigla da secretaria no final, precedidas pela letra <span class="font-mono bg-blue-100 p-1 rounded-sm">A</span> (de Administrativo e Assessoramento) (ex: COOA<span class="font-mono bg-blue-100 p-1 rounded-sm">MA</span> para Secretaria de Meio Ambiente e COOA<span class="font-mono bg-blue-100 p-1 rounded-sm">DE</span> para Secretaria de Desenvolvimento Econômico).</li>
+            </ul>
+        </div>
+        
+        <!-- Search Section -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Buscar Sigla</h2>
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <input type="text" id="search-input" placeholder="Digite a sigla, órgão/secretaria ou unidade..."
+                       class="w-full sm:flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="performSearch()"
+                        class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700 transition duration-300">
+                    Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="results-container" class="space-y-4">
+            <!-- Results will be injected here -->
+        </div>
+
+        <!-- Sources Section -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Fontes</h2>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                <li><strong class="text-gray-900">Fontes para a definição das siglas:</strong>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li><a href="http://www.diariooficial.rj.gov.br/documents/10180/2996160/2020-10-30-Decreto+47339-2020.pdf" target="_blank" class="text-blue-600 hover:underline">DECRETO Nº 47.339 DE 29 DE OUTUBRO DE 2020</a> (Padroniza siglas no Sistema Eletrônico de Informações - SEI-RJ)</li>
+                        <li><a href="https://www.cmbh.mg.gov.br/comunicacao/guia-de-redacao" target="_blank" class="text-blue-600 hover:underline">Uso das siglas</a> (Guia de Redação da Câmara Municipal de Belo Horizonte - CMBH)</li>
+                    </ul>
+                </li>
+                <li><strong class="text-gray-900">Fontes para as organizações:</strong>
+                    <p class="mt-2">Decretos nº 2401, 2413, 2425, 2403, 2021, 2415, 2409, 2399, 2405, 2411, 2420, 2423, 2407, 2417.</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+</div>
+
+<script>
+    const data = [
+        { "sigla": "COOCOM", "orgao": "Gabinete (GAB)", "unidade": "Coordenadoria de Comunicação" },
+        { "sigla": "DIRSEG", "orgao": "Gabinete (GAB)", "unidade": "Diretoria de Segurança Institucional" },
+        { "sigla": "DIRTLEN", "orgao": "Assessoria Executiva (ASE)", "unidade": "Diretoria de Técnica Legislativa e Normativa" },
+        { "sigla": "DIRPE", "orgao": "Assessoria Executiva (ASE)", "unidade": "Diretoria de Projetos Especiais" },
+        { "sigla": "DIRGO", "orgao": "Assessoria Executiva (ASE)", "unidade": "Diretoria de Governança" },
+        { "sigla": "GERCI", "orgao": "Controladoria Geral do Município (CGM)", "unidade": "Gerência de Controle Interno" },
+        { "sigla": "GERAI", "orgao": "Controladoria Geral do Município (CGM)", "unidade": "Gerência de Auditoria Interna" },
+        { "sigla": "CGMOUVI", "orgao": "Controladoria Geral do Município (CGM)", "unidade": "Ouvidoria Municipal" },
+        { "sigla": "CORREG", "orgao": "Controladoria Geral do Município (CGM)", "unidade": "Corregedoria Municipal" },
+        { "sigla": "PROCA", "orgao": "Procuradoria Geral do Município (PGM)", "unidade": "Procurador Adjunto" },
+        { "sigla": "DIRCONS", "orgao": "Procuradoria Geral do Município (PGM)", "unidade": "Diretoria Consultiva" },
+        { "sigla": "DIRCONT", "orgao": "Procuradoria Geral do Município (PGM)", "unidade": "Diretoria Contenciosa" },
+        { "sigla": "DIRPRAES", "orgao": "Procuradoria Geral do Município (PGM)", "unidade": "Diretoria de Processos Administrativos Especiais" },
+        { "sigla": "SECATD", "orgao": "Secretaria de Governo (GOV)", "unidade": "Secretaria Adjunta de Transformação Digital" },
+        { "sigla": "COOTI", "orgao": "Secretaria Adjunta de Transformação Digital (SECATD)", "unidade": "Coordenadoria de Tecnologia da Informação" },
+        { "sigla": "COOMIN", "orgao": "Secretaria Adjunta de Transformação Digital (SECATD)", "unidade": "Coordenadoria de Modernização e Inovação" },
+        { "sigla": "DIREG", "orgao": "Secretaria de Governo (GOV)", "unidade": "Diretoria Executiva de Governo" },
+        { "sigla": "SECARI", "orgao": "Secretaria de Governo (GOV)", "unidade": "Secretaria Adjunta de Relações Institucionais" },
+        { "sigla": "GFASSCOM", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Assessoria de Comunicação" },
+        { "sigla": "ASSADM", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Assessoria Administrativa" },
+        { "sigla": "NUCQG", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Núcleo de Qualidade do Gasto" },
+        { "sigla": "SECAGADM", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Secretaria Adjunta de Gestão e Administração" },
+        { "sigla": "DIRCOMP", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Diretoria de Compras Públicas" },
+        { "sigla": "COOPLOG", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Coordenadoria de Patrimônio e Logística" },
+        { "sigla": "DIRGEP", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Diretoria de Gestão de Pessoas" },
+        { "sigla": "SECAFINT", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Secretaria Adjunta de Finanças e Tesouraria" },
+        { "sigla": "DIRCON", "orgao": "Secretaria Adjunta de Finanças e Tesouraria (SECAFINT)", "unidade": "Diretoria de Contabilidade" },
+        { "sigla": "DIRRTF", "orgao": "Secretaria Adjunta de Finanças e Tesouraria (SECAFINT)", "unidade": "Diretoria de Receita, Tributação e Fiscalização" },
+        { "sigla": "DIRTO", "orgao": "Secretaria Adjunta de Finanças e Tesouraria (SECAFINT)", "unidade": "Diretoria de Tesouraria e Orçamento" },
+        { "sigla": "APOGAB", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Apoio ao Gabinete" },
+        { "sigla": "SASSCOM", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Assessoria de Comunicação" },
+        { "sigla": "SOUVI", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Ouvidoria" },
+        { "sigla": "SECAPMAC", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Secretaria Adjunta de Planejamento e Média e Alta Complexidade" },
+        { "sigla": "COOPLAR", "orgao": "Secretaria Adjunta de Planejamento e Média e Alta Complexidade (SECAPMAC)", "unidade": "Coordenação de Planejamento e Regulação" },
+        { "sigla": "DIRHOSM", "orgao": "Secretaria Adjunta de Planejamento e Média e Alta Complexidade (SECAPMAC)", "unidade": "Diretoria do Hospital Municipal" },
+        { "sigla": "COOPALA", "orgao": "Secretaria Adjunta de Planejamento e Média e Alta Complexidade (SECAPMAC)", "unidade": "Coordenação do Pronto Atendimento Lagoa" },
+        { "sigla": "SECAAPV", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Secretaria Adjunta de Atenção Primária e Vigilância em Saúde" },
+        { "sigla": "COOVIS", "orgao": "Secretaria Adjunta de Atenção Primária e Vigilância em Saúde (SECAAPV)", "unidade": "Coordenação de Vigilância em Saúde" },
+        { "sigla": "COOATP", "orgao": "Secretaria Adjunta de Atenção Primária e Vigilância em Saúde (SECAAPV)", "unidade": "Coordenação de Atenção Primária" },
+        { "sigla": "COOINFE", "orgao": "Secretaria Adjunta de Atenção Primária e Vigilância em Saúde (SECAAPV)", "unidade": "Coordenação de Informações Estratégicas" },
+        { "sigla": "COOSAB", "orgao": "Secretaria Adjunta de Atenção Primária e Vigilância em Saúde (SECAAPV)", "unidade": "Coordenação de Saúde Bucal" },
+        { "sigla": "SECAGAF", "orgao": "Secretaria de Saúde (SMS)", "unidade": "Secretaria Adjunta de Gestão Administrativa e Financeira" },
+        { "sigla": "COOPED", "orgao": "Secretaria de Educação (SME)", "unidade": "Coordenadoria Pedagógica" },
+        { "sigla": "COOENS", "orgao": "Secretaria de Educação (SME)", "unidade": "Coordenadoria de Ensino" },
+        { "sigla": "SECAEX", "orgao": "Secretaria de Educação (SME)", "unidade": "Secretaria Adjunta Executiva" },
+        { "sigla": "COOADM", "orgao": "Secretaria de Infraestrutura (SMI)", "unidade": "Coordenação Administrativa" },
+        { "sigla": "IASSCOM", "orgao": "Secretaria de Infraestrutura (SMI)", "unidade": "Assessoria de Comunicação" },
+        { "sigla": "SECALU", "orgao": "Secretaria de Infraestrutura (SMI)", "unidade": "Secretaria Adjunta de Limpeza Urbana" },
+        { "sigla": "SECAPU", "orgao": "Secretaria de Infraestrutura (SMI)", "unidade": "Secretaria Adjunta de Planejamento Urbano" },
+        { "sigla": "SECAOSP", "orgao": "Secretaria de Infraestrutura (SMI)", "unidade": "Secretaria Adjunta de Obras e Serviços Públicos" },
+        { "sigla": "NUCADMBE", "orgao": "Secretaria de Bem-Estar (SBE)", "unidade": "Núcleo Administrativo" },
+        { "sigla": "DIRLA", "orgao": "Secretaria de Bem-Estar (SBE)", "unidade": "Diretoria de Lazer" },
+        { "sigla": "SECAELJ", "orgao": "Secretaria de Bem-Estar (SBE)", "unidade": "Secretaria Adjunta de Esportes, Lazer e Juventude" },
+        { "sigla": "SECACPH", "orgao": "Secretaria de Bem-Estar (SBE)", "unidade": "Secretaria Adjunta de Cultura e Patrimônio Histórico" },
+        { "sigla": "NUCADMDS", "orgao": "Secretaria de Desenvolvimento Social (SDS)", "unidade": "Núcleo de Administração" },
+        { "sigla": "COOASIP", "orgao": "Secretaria de Desenvolvimento Social (SDS)", "unidade": "Coordenadoria de Assistência Social e Inclusão Produtiva" },
+        { "sigla": "COOASPD", "orgao": "Secretaria de Desenvolvimento Social (SDS)", "unidade": "Coordenadoria de Abordagem Social e Política sobre Drogas" },
+        { "sigla": "COODH", "orgao": "Secretaria de Desenvolvimento Social (SDS)", "unidade": "Coordenadoria de Direitos Humanos" },
+        { "sigla": "NUCADMSP", "orgao": "Secretaria de Segurança Pública (SSP)", "unidade": "Núcleo Administrativo" },
+        { "sigla": "COMGCM", "orgao": "Secretaria de Segurança Pública (SSP)", "unidade": "Comando da Guarda Civil Municipal" },
+        { "sigla": "COOMDC", "orgao": "Secretaria de Segurança Pública (SSP)", "unidade": "Coordenadoria Municipal de Defesa Civil" },
+        { "sigla": "GERTMU", "orgao": "Secretaria de Segurança Pública (SSP)", "unidade": "Gerência de Trânsito e Mobilidade Urbana" },
+        { "sigla": "COOAMA", "orgao": "Secretaria de Meio Ambiente (SMA)", "unidade": "Coordenadoria Administrativa e Assessoria" },
+        { "sigla": "GERFISC", "orgao": "Secretaria de Meio Ambiente (SMA)", "unidade": "Gerência de Fiscalização" },
+        { "sigla": "GERPAPR", "orgao": "Secretaria de Meio Ambiente (SMA)", "unidade": "Gerência de Parques e Praças Municipais" },
+        { "sigla": "COOADE", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Coordenadoria Administrativa e de Assessoramento" },
+        { "sigla": "DIRIC", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Diretoria de Indústria e Comércio" },
+        { "sigla": "DIRTUR", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Diretoria de Turismo" },
+        { "sigla": "CEAC", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Coordenadoria do Centro de Atendimento ao Cidadão" },
+        { "sigla": "DIRDA", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Diretoria de Desenvolvimento Agrícola" }
+    ];
+    
+    // Build a map of parents to their direct children
+    const allParents = {};
+    data.forEach(item => {
+        if (!allParents[item.orgao]) {
+            allParents[item.orgao] = [];
+        }
+        allParents[item.orgao].push(item);
+    });
+
+    // Find all top-level parents (those that are not a child of any other unit)
+    const allUnitNames = new Set(data.map(item => item.unidade));
+    const topLevelParents = Object.keys(allParents).filter(parent => !allUnitNames.has(parent.trim()));
+    
+    function renderHierarchy() {
+        const container = document.getElementById('results-container');
+        container.innerHTML = '';
+        
+        let html = '';
+        
+        function renderTree(parent, level) {
+            const children = allParents[parent];
+            if (!children || children.length === 0) return '';
+            
+            let childrenHtml = '';
+            children.forEach(child => {
+                const childIsParent = allParents[child.unidade.trim()];
+                const siglaDisplay = child.sigla ? ` - ${child.sigla}` : '';
+                const toggleHtml = childIsParent ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>` : `<div class="w-5 h-5 mr-2"></div>`;
+
+                childrenHtml += `
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm ${'indent-level-' + level} flex items-center cursor-pointer" onclick="toggleChildren(this)">
+                        ${toggleHtml}
+                        <h3 class="font-bold text-gray-800">${child.unidade}${siglaDisplay}</h3>
+                    </div>
+                    <div class="children-container hidden">
+                        ${childIsParent ? renderTree(child.unidade, level + 1) : ''}
+                    </div>
+                `;
+            });
+            return childrenHtml;
+        }
+
+        topLevelParents.forEach(parent => {
+            const siglaMatch = parent.match(/\((.*?)\)/);
+            const sigla = siglaMatch ? siglaMatch[1] : '';
+            const parentName = parent.replace(/ *\([^)]*\) */g, '').trim();
+
+            html += `
+                <div class="bg-gray-100 p-6 rounded-lg border border-gray-300 shadow-md">
+                    <div class="flex items-center cursor-pointer" onclick="toggleChildren(this, true)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-500 chevron chevron-down" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                        <h2 class="text-xl font-bold text-gray-700">${parentName} (${sigla})</h2>
+                    </div>
+                    <div class="children-container mt-4 space-y-2">
+                        ${renderTree(parent, 1)}
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function toggleChildren(element, isTopLevel = false) {
+        let container;
+        let chevron;
+
+        if (isTopLevel) {
+            container = element.nextElementSibling;
+            chevron = element.querySelector('.chevron');
+        } else {
+            container = element.nextElementSibling;
+            chevron = element.querySelector('.chevron');
+        }
+
+        if (container.classList.contains('hidden')) {
+            container.classList.remove('hidden');
+            if (chevron) {
+                chevron.classList.add('chevron-down');
+            }
+        } else {
+            container.classList.add('hidden');
+            if (chevron) {
+                chevron.classList.remove('chevron-down');
+            }
+        }
+    }
+
+    function renderSearchResults(results) {
+        const container = document.getElementById('results-container');
+        container.innerHTML = '';
+        if (results.length === 0) {
+            container.innerHTML = `
+                <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200 shadow-sm text-yellow-800">
+                    <p class="text-center font-medium">Nenhum resultado encontrado. Tente outra busca.</p>
+                </div>
+            `;
+        } else {
+            results.forEach(item => {
+                container.innerHTML += `
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm transition-transform transform hover:scale-[1.01]">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600">${item.sigla}</h3>
+                            <p class="text-md font-semibold text-gray-600 sm:text-right mt-2 sm:mt-0">${item.orgao}</p>
+                        </div>
+                        <p class="text-gray-700 mb-2"><strong>Unidade:</strong> ${item.unidade}</p>
+                    </div>
+                `;
+            });
+        }
+    }
+
+    function performSearch() {
+        const input = document.getElementById('search-input').value.toLowerCase();
+        if (input === '') {
+            renderHierarchy();
+            return;
+        }
+        const filteredData = data.filter(item =>
+            item.sigla.toLowerCase().includes(input) ||
+            item.orgao.toLowerCase().includes(input) ||
+            item.unidade.toLowerCase().includes(input)
+        );
+        renderSearchResults(filteredData);
+    }
+
+    // Initial render of all data
+    document.addEventListener('DOMContentLoaded', () => {
+        renderHierarchy();
+    });
+
+    // Add search on Enter key press
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+</script>
+
+</body>
+</html>
