@@ -16,15 +16,27 @@
         .container {
             max-width: 900px;
         }
-        .indent-level-1 { padding-left: 2rem; }
-        .indent-level-2 { padding-left: 4rem; }
-        .indent-level-3 { padding-left: 6rem; }
-        /* Add more levels if needed */
         .chevron {
             transition: transform 0.2s ease-in-out;
         }
         .chevron-down {
             transform: rotate(90deg);
+        }
+        .bg-card {
+            background-color: #f8fafc;
+        }
+        .main-card {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .child-card-container {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-top: -1px;
+        }
+        .child-card-container > div:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
         }
     </style>
 </head>
@@ -32,7 +44,7 @@
 
 <div class="container mx-auto bg-white rounded-lg shadow-xl p-8 space-y-8">
     <header class="text-center mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Busca Siglas -  SEI Pedro Leopoldo</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Busca Siglas - SEI Pedro Leopoldo</h1>
         <p class="mt-2 text-lg text-gray-600">Busque e compreenda as siglas das unidades SEI.</p>
     </header>
 
@@ -156,91 +168,94 @@
         { "sigla": "CEAC", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Coordenadoria do Centro de Atendimento ao Cidadão" },
         { "sigla": "DIRDA", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Diretoria de Desenvolvimento Agrícola" }
     ];
-    
-    // Build a map of parents to their direct children
-    const allParents = {};
-    data.forEach(item => {
-        if (!allParents[item.orgao]) {
-            allParents[item.orgao] = [];
-        }
-        allParents[item.orgao].push(item);
-    });
 
-    // Find all top-level parents (those that are not a child of any other unit)
-    const allUnitNames = new Set(data.map(item => item.unidade));
-    const topLevelParents = Object.keys(allParents).filter(parent => !allUnitNames.has(parent.trim()));
-    
+    const buildHierarchy = (data) => {
+        const nodes = new Map();
+        
+        // Pass 1: Create a node for every unit and map by name
+        data.forEach(item => {
+            const fullName = item.unidade.trim() + (item.sigla ? ` - ${item.sigla}` : '');
+            nodes.set(item.unidade, { ...item, fullName, children: [] });
+        });
+
+        const roots = [];
+
+        // Pass 2: Build the hierarchy
+        nodes.forEach(node => {
+            const parentNameMatch = node.orgao.match(/^(.*) \((.*)\)$/);
+            const parentName = parentNameMatch ? parentNameMatch[1].trim() : node.orgao.trim();
+            const parentNode = nodes.get(parentName);
+
+            if (parentNode) {
+                // If the parent is another node in our map, add this node as a child
+                parentNode.children.push(node);
+            } else {
+                // If the parent is not in our map, it's a top-level root
+                const existingRoot = roots.find(r => r.unidade === parentName);
+                if (!existingRoot) {
+                    const parentSigla = parentNameMatch ? parentNameMatch[2].trim() : null;
+                    const rootNode = {
+                        unidade: parentName,
+                        sigla: parentSigla,
+                        fullName: parentName + (parentSigla ? ` - ${parentSigla}` : ''),
+                        children: [node]
+                    };
+                    roots.push(rootNode);
+                } else {
+                    existingRoot.children.push(node);
+                }
+            }
+        });
+        
+        // Return only the top-level roots
+        return roots.sort((a, b) => a.unidade.localeCompare(b.unidade));
+    };
+
+    const hierarchyTree = buildHierarchy(data);
+
     function renderHierarchy() {
         const container = document.getElementById('results-container');
         container.innerHTML = '';
         
-        let html = '';
-        
-        function renderTree(parent, level) {
-            const children = allParents[parent];
-            if (!children || children.length === 0) return '';
-            
-            let childrenHtml = '';
-            children.forEach(child => {
-                const childIsParent = allParents[child.unidade.trim()];
-                const siglaDisplay = child.sigla ? ` - ${child.sigla}` : '';
-                const toggleHtml = childIsParent ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>` : `<div class="w-5 h-5 mr-2"></div>`;
+        function renderNode(node, isNested = false) {
+            const hasChildren = node.children && node.children.length > 0;
+            const toggleHtml = hasChildren
+                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`
+                : `<div class="w-5 h-5 mr-2 text-transparent"></div>`;
 
-                childrenHtml += `
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm ${'indent-level-' + level} flex items-center cursor-pointer" onclick="toggleChildren(this)">
+            let html = `
+                <div class="${isNested ? 'bg-white' : 'bg-gray-50'} rounded-lg border border-gray-200 shadow-sm mb-4">
+                    <div class="p-4 flex items-center cursor-pointer" onclick="toggleChildren(this)">
                         ${toggleHtml}
-                        <h3 class="font-bold text-gray-800">${child.unidade}${siglaDisplay}</h3>
+                        <h3 class="font-bold text-gray-800">${node.unidade}${node.sigla ? ` - ${node.sigla}` : ''}</h3>
                     </div>
-                    <div class="children-container hidden">
-                        ${childIsParent ? renderTree(child.unidade, level + 1) : ''}
-                    </div>
-                `;
-            });
-            return childrenHtml;
+            `;
+            
+            if (hasChildren) {
+                html += `<div class="children-container hidden p-4 pt-0 space-y-2">`;
+                node.children.forEach(child => {
+                    html += renderNode(child, true);
+                });
+                html += `</div>`;
+            }
+            html += `</div>`;
+            return html;
         }
 
-        topLevelParents.forEach(parent => {
-            const siglaMatch = parent.match(/\((.*?)\)/);
-            const sigla = siglaMatch ? siglaMatch[1] : '';
-            const parentName = parent.replace(/ *\([^)]*\) */g, '').trim();
-
-            html += `
-                <div class="bg-gray-100 p-6 rounded-lg border border-gray-300 shadow-md">
-                    <div class="flex items-center cursor-pointer" onclick="toggleChildren(this, true)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-500 chevron chevron-down" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
-                        <h2 class="text-xl font-bold text-gray-700">${parentName} (${sigla})</h2>
-                    </div>
-                    <div class="children-container mt-4 space-y-2">
-                        ${renderTree(parent, 1)}
-                    </div>
-                </div>
-            `;
+        hierarchyTree.forEach(node => {
+            container.innerHTML += renderNode(node);
         });
-
-        container.innerHTML = html;
     }
 
-    function toggleChildren(element, isTopLevel = false) {
-        let container;
-        let chevron;
-
-        if (isTopLevel) {
-            container = element.nextElementSibling;
-            chevron = element.querySelector('.chevron');
-        } else {
-            container = element.nextElementSibling;
-            chevron = element.querySelector('.chevron');
-        }
-
-        if (container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
+    function toggleChildren(element) {
+        const parent = element.parentElement;
+        const container = parent.querySelector('.children-container');
+        const chevron = element.querySelector('.chevron');
+        
+        if (container) {
+            container.classList.toggle('hidden');
             if (chevron) {
-                chevron.classList.add('chevron-down');
-            }
-        } else {
-            container.classList.add('hidden');
-            if (chevron) {
-                chevron.classList.remove('chevron-down');
+                chevron.classList.toggle('chevron-down');
             }
         }
     }
@@ -298,3 +313,4 @@
 
 </body>
 </html>
+
