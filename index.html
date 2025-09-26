@@ -337,7 +337,7 @@
                                 </svg>
                             </p>
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                                <h3 class="text-2xl font-bold text-brand-dark-blue">${item.sigla}</h3>
+                                <h3 class="text-2xl font-bold text-brand-dark-blue" style="cursor: pointer" onclick="if(navigator.clipboard.writeText(this.textContent)) alert('Sigla copiada para área de transferência')">${item.sigla}</h3>
                                 <p class="text-md font-normal text-slate-600 sm:text-right mt-2 sm:mt-0">${item.unidade}</p>
                             </div>
                         </div>
