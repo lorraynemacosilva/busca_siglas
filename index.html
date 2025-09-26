@@ -68,6 +68,16 @@
         .hierarchy-chevron-down {
             transform: rotate(90deg);
         }
+        /* Estilo para o link do título */
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        .header-link:hover h1 {
+            opacity: 0.9;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body class="bg-slate-100 p-4 sm:p-8">
@@ -76,9 +86,18 @@
     <!-- Cabeçalho -->
     <header class="mb-6">
         <div class="flex items-center justify-between">
+            <!-- Logo Esquerda -->
             <img src="assets/baixados-removebg-preview.png" alt="Logo da Prefeitura de Pedro Leopoldo" class="h-16 w-16 sm:h-20 sm:w-20 object-contain">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-dark-blue">Busca Siglas</h1>
-            <img src="assets/sei_logo-removebg-preview.png" alt="Logo do SEI" class="h-16 w-16 sm:h-20 sm:w-20 object-contain">
+            
+            <!-- Título como Link -->
+            <a href="#" onclick="clearSearch()" class="header-link">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-dark-blue">Busca Siglas</h1>
+            </a>
+            
+            <!-- Logo Direita (com hyperlink) -->
+            <a href="http://pedroleopoldo.sei.mg.gov.br/sei" target="_blank" class="header-link">
+                <img src="assets/sei_logo-removebg-preview.png" alt="Logo do SEI" class="h-16 w-16 sm:h-20 sm:w-20 object-contain">
+            </a>
         </div>
         <p class="mt-2 text-xl font-light text-slate-600 text-center">Busque e compreenda as siglas das unidades SEI.</p>
     </header>
@@ -88,7 +107,7 @@
         <!-- Seção de Busca -->
         <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-brand-dark-blue">Buscar Sigla</h2>
+                <h2 class="text-2xl font-bold text-brand-dark-blue">Buscar Sigla </h2>
                 <!-- Ícone de Informação (Tooltip) -->
                 <div class="info-container relative cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-dark-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -118,10 +137,6 @@
                 <button onclick="performSearch()"
                         class="w-full sm:w-auto px-6 py-3 bg-brand-dark-blue text-white font-normal rounded-lg shadow-md hover:bg-brand-dark-blue hover:bg-opacity-90 transition duration-300">
                     Buscar
-                </button>
-                <button id="clear-search-btn" onclick="clearSearch()"
-                        class="hidden w-full sm:w-auto px-6 py-3 bg-gray-500 text-white font-normal rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
-                    Nova Busca
                 </button>
             </div>
         </div>
@@ -299,13 +314,8 @@
     function renderResults(items, isSearch = false) {
         const container = document.getElementById('results-container');
         container.innerHTML = ''; // Limpa os resultados anteriores
-        const clearBtn = document.getElementById('clear-search-btn');
 
-        if (isSearch) {
-            clearBtn.classList.remove('hidden');
-        } else {
-            clearBtn.classList.add('hidden');
-        }
+        // A lógica do botão 'clear-search-btn' foi removida, pois a função foi integrada ao título principal.
 
         if (items.length === 0) {
             // Exibe uma mensagem se não houver resultados
@@ -468,5 +478,7 @@
 
 </body>
 </html>
+
+
 
 
