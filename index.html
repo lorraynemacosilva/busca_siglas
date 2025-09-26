@@ -3,91 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Busca Siglas- SEI Pedro Leopoldo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Busca de Siglas - SEI Pedro Leopoldo</title>
+    
+    <!-- Importa a fonte Poppins do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet">
+
+    <!-- O script do Tailwind CDN deve vir antes da sua configuração personalizada -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuração personalizada do Tailwind com as cores da sua marca -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-light-blue': '#77C4EE',
+                        'brand-dark-blue': '#2D537F',
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            background-color: #F1F5F9;
         }
-        .container {
-            max-width: 900px;
+        /* Estilo para o tooltip */
+        .info-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 10;
         }
-        .chevron {
+        .info-container:hover .info-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Estilo para a lista de autocomplete */
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            z-index: 5;
+        }
+        .autocomplete-item:hover {
+            background-color: #f0f4f8;
+        }
+        /* Estilos para a hierarquia */
+        .hierarchy-chevron {
             transition: transform 0.2s ease-in-out;
         }
-        .chevron-down {
+        .hierarchy-chevron-down {
             transform: rotate(90deg);
-        }
-        .bg-card {
-            background-color: #f8fafc;
-        }
-        .main-card {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-        .child-card-container {
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            margin-top: -1px;
-        }
-        .child-card-container > div:last-child {
-            border-bottom-left-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
         }
     </style>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-slate-100 p-4 sm:p-8">
 
-<div class="container mx-auto bg-white rounded-lg shadow-xl p-8 space-y-8">
-    <header class="text-center mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Busca Siglas - SEI Pedro Leopoldo</h1>
-        <p class="mt-2 text-lg text-gray-600">Busque e compreenda as siglas das unidades SEI.</p>
+<div class="container mx-auto max-w-4xl bg-white rounded-2xl shadow-2xl p-6 sm:p-10 space-y-8">
+    <!-- Cabeçalho -->
+    <header class="mb-6">
+        <div class="flex items-center justify-between">
+            <img src="https://placehold.co/100x100/77C4EE/ffffff?text=Prefeitura" alt="Logo da Prefeitura de Pedro Leopoldo" class="h-16 w-16 sm:h-20 sm:w-20 object-contain">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-dark-blue">Busca Siglas</h1>
+            <img src="https://placehold.co/100x100/2D537F/ffffff?text=SEI!" alt="Logo do SEI" class="h-16 w-16 sm:h-20 sm:w-20 object-contain">
+        </div>
+        <p class="mt-2 text-xl font-light text-slate-600 text-center">Busque e compreenda as siglas das unidades SEI.</p>
     </header>
 
-    <main class="space-y-6">
-        <!-- Explanation Section -->
-        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 shadow-sm">
-            <h2 class="text-xl font-semibold text-blue-800 mb-4">Lógica de Criação das Siglas</h2>
-            <ul class="list-disc list-inside text-gray-700 space-y-2">
-                <li><strong class="text-blue-700">Prefixos:</strong> Siglas para unidades subordinadas começam com um prefixo, como <span class="font-mono bg-blue-100 p-1 rounded-sm">SECA</span> para Secretarias Adjuntas, <span class="font-mono bg-blue-100 p-1 rounded-sm">COO</span> para Coordenadorias, <span class="font-mono bg-blue-100 p-1 rounded-sm">DIR</span> para Diretorias, <span class="font-mono bg-blue-100 p-1 rounded-sm">GER</span> para Gerências, e <span class="font-mono bg-blue-100 p-1 rounded-sm">NUC</span> para Núcleos.</li>
-                <li><strong class="text-blue-700">Duplicidade de Unidades:</strong> Para unidades com o mesmo nome em secretarias diferentes (ex: Assessoria de Comunicação), as duas últimas ou a última letra da sigla da secretaria são adicionadas como um prefixo (ex: <span class="font-mono bg-blue-100 p-1 rounded-sm">GF</span>ASSCOM para Secretaria de Gestão e Finanças e <span class="font-mono bg-blue-100 p-1 rounded-sm">I</span>ASSCOM para Secretaria de Infraestrutura).</li>
-                <li><strong class="text-blue-700">Coordenadorias Administrativas:</strong> Coordenadorias administrativas e de assessoramento recebem as duas últimas letras da sigla da secretaria no final, precedidas pela letra <span class="font-mono bg-blue-100 p-1 rounded-sm">A</span> (de Administrativo e Assessoramento) (ex: COOA<span class="font-mono bg-blue-100 p-1 rounded-sm">MA</span> para Secretaria de Meio Ambiente e COOA<span class="font-mono bg-blue-100 p-1 rounded-sm">DE</span> para Secretaria de Desenvolvimento Econômico).</li>
-            </ul>
-        </div>
+    <main class="space-y-8">
         
-        <!-- Search Section -->
-        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Buscar Sigla</h2>
-            <div class="flex flex-col sm:flex-row gap-4 items-center">
-                <input type="text" id="search-input" placeholder="Digite a sigla, órgão/secretaria ou unidade..."
-                       class="w-full sm:flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- Seção de Busca -->
+        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold text-brand-dark-blue">Buscar Sigla</h2>
+                <!-- Ícone de Informação (Tooltip) -->
+                <div class="info-container relative cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-dark-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="info-tooltip absolute top-8 right-0 w-80 bg-brand-light-blue bg-opacity-95 p-4 rounded-lg shadow-lg">
+                        <h3 class="text-white font-bold mb-2">Lógica de Criação das Siglas</h3>
+                        <ul class="list-disc list-inside text-sm text-white space-y-1">
+                            <li><strong class="font-bold">Prefixos:</strong> Siglas para unidades subordinadas começam com um prefixo, como <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">SECA</span> (Secretarias Adjuntas), <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">COO</span> (Coordenadorias), <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">DIR</span> (Diretorias), <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">GER</span> (Gerências), e <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">NUC</span> (Núcleos).</li>
+                            <li><strong class="font-bold">Duplicidade de Unidades:</strong> Para unidades com o mesmo nome em secretarias diferentes, as duas últimas ou a última letra da sigla da secretaria são adicionadas como um prefixo (ex: <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">GF</span>ASSCOM para SGF e <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">I</span>ASSCOM para SMI).</li>
+                            <li><strong class="font-bold">Coordenadorias Administrativas:</strong> Coordenadorias administrativas e de assessoramento recebem as duas últimas letras da sigla da secretaria no final, precedidas pela letra <span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">A</span> (ex: COOA<span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">MA</span> para SMA e COOA<span class="font-mono bg-blue-100 p-1 rounded-sm text-brand-dark-blue">DE</span> para SDE).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="relative flex flex-col sm:flex-row gap-4 items-center">
+                <div class="relative w-full sm:flex-1">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" placeholder="Digite a sigla, órgão ou unidade..."
+                           class="w-full p-3 pl-10 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-dark-blue transition duration-300">
+                    <div id="autocomplete-list" class="autocomplete-list hidden bg-white rounded-b-lg shadow-lg"></div>
+                </div>
                 <button onclick="performSearch()"
-                        class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700 transition duration-300">
+                        class="w-full sm:w-auto px-6 py-3 bg-brand-dark-blue text-white font-normal rounded-lg shadow-md hover:bg-brand-dark-blue hover:bg-opacity-90 transition duration-300">
                     Buscar
+                </button>
+                <button id="clear-search-btn" onclick="clearSearch()"
+                        class="hidden w-full sm:w-auto px-6 py-3 bg-gray-500 text-white font-normal rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
+                    Nova Busca
                 </button>
             </div>
         </div>
 
-        <!-- Result Section -->
+        <!-- Seção de Resultados -->
         <div id="results-container" class="space-y-4">
-            <!-- Results will be injected here -->
+            <!-- Os resultados serão injetados aqui -->
         </div>
 
-        <!-- Sources Section -->
-        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Fontes</h2>
-            <ul class="list-disc list-inside text-gray-700 space-y-2">
-                <li><strong class="text-gray-900">Fontes para a definição das siglas:</strong>
+        <!-- Seção de Fontes -->
+        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+            <h2 class="text-2xl font-bold text-brand-dark-blue mb-4">Fontes</h2>
+            <ul class="list-disc list-inside text-slate-700 font-normal space-y-2">
+                <li><strong class="text-slate-900">Fontes para a definição das siglas:</strong>
                     <ul class="list-disc list-inside ml-4 mt-2">
-                        <li><a href="http://www.diariooficial.rj.gov.br/documents/10180/2996160/2020-10-30-Decreto+47339-2020.pdf" target="_blank" class="text-blue-600 hover:underline">DECRETO Nº 47.339 DE 29 DE OUTUBRO DE 2020</a> (Padroniza siglas no Sistema Eletrônico de Informações - SEI-RJ)</li>
-                        <li><a href="https://www.cmbh.mg.gov.br/comunicacao/guia-de-redacao" target="_blank" class="text-blue-600 hover:underline">Uso das siglas</a> (Guia de Redação da Câmara Municipal de Belo Horizonte - CMBH)</li>
+                        <li><a href="http://www.diariooficial.rj.gov.br/documents/10180/2996160/2020-10-30-Decreto+47339-2020.pdf" target="_blank" class="text-brand-dark-blue hover:underline">DECRETO Nº 47.339 DE 29 DE OUTUBRO DE 2020</a> (Padroniza siglas no Sistema Eletrônico de Informações - SEI-RJ)</li>
+                        <li><a href="https://www.cmbh.mg.gov.br/comunicacao/guia-de-redacao" target="_blank" class="text-brand-dark-blue hover:underline">Uso das siglas</a> (Guia de Redação da Câmara Municipal de Belo Horizonte - CMBH)</li>
                     </ul>
                 </li>
-                <li><strong class="text-gray-900">Fontes para as organizações:</strong>
+                <li><strong class="text-slate-900">Fontes para as organizações:</strong>
                     <p class="mt-2">Decretos nº 2401, 2413, 2425, 2403, 2021, 2415, 2409, 2399, 2405, 2411, 2420, 2423, 2407, 2417.</p>
                 </li>
             </ul>
@@ -121,7 +175,7 @@
         { "sigla": "SECAGADM", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Secretaria Adjunta de Gestão e Administração" },
         { "sigla": "DIRCOMP", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Diretoria de Compras Públicas" },
         { "sigla": "COOPLOG", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Coordenadoria de Patrimônio e Logística" },
-        { "sigla": "DIRGEP", "orgao": "Secretaria Adjunta de Gestão e Administração (SECAGADM)", "unidade": "Diretoria de Gestão de Pessoas" },
+        { "sigla": "DIRGEP", "orgao": "Secretaria Adjunta de Gestão de Administração (SECAGADM)", "unidade": "Diretoria de Gestão de Pessoas" },
         { "sigla": "SECAFINT", "orgao": "Secretaria de Gestão e Finanças (SGF)", "unidade": "Secretaria Adjunta de Finanças e Tesouraria" },
         { "sigla": "DIRCON", "orgao": "Secretaria Adjunta de Finanças e Tesouraria (SECAFINT)", "unidade": "Diretoria de Contabilidade" },
         { "sigla": "DIRRTF", "orgao": "Secretaria Adjunta de Finanças e Tesouraria (SECAFINT)", "unidade": "Diretoria de Receita, Tributação e Fiscalização" },
@@ -169,28 +223,34 @@
         { "sigla": "DIRDA", "orgao": "Secretaria de Desenvolvimento Econômico (SDE)", "unidade": "Diretoria de Desenvolvimento Agrícola" }
     ];
 
+    /**
+     * Constrói a hierarquia dos dados com base nos campos "orgao" e "unidade".
+     * @param {Array} data O array de objetos de dados.
+     * @returns {Array} A árvore de hierarquia.
+     */
     const buildHierarchy = (data) => {
         const nodes = new Map();
         
-        // Pass 1: Create a node for every unit and map by name
+        // Passo 1: Cria um nó para cada unidade e mapeia pelo nome da unidade
         data.forEach(item => {
             const fullName = item.unidade.trim() + (item.sigla ? ` - ${item.sigla}` : '');
-            nodes.set(item.unidade, { ...item, fullName, children: [] });
+            nodes.set(item.unidade.trim(), { ...item, fullName, children: [] });
         });
 
         const roots = [];
 
-        // Pass 2: Build the hierarchy
-        nodes.forEach(node => {
-            const parentNameMatch = node.orgao.match(/^(.*) \((.*)\)$/);
-            const parentName = parentNameMatch ? parentNameMatch[1].trim() : node.orgao.trim();
+        // Passo 2: Constrói a hierarquia
+        data.forEach(item => {
+            const parentNameMatch = item.orgao.match(/^(.*) \((.*)\)$/);
+            const parentName = parentNameMatch ? parentNameMatch[1].trim() : item.orgao.trim();
             const parentNode = nodes.get(parentName);
+            const currentNode = nodes.get(item.unidade.trim());
 
             if (parentNode) {
-                // If the parent is another node in our map, add this node as a child
-                parentNode.children.push(node);
+                // Se o pai é outro nó no nosso mapa, adiciona o nó atual como filho
+                parentNode.children.push(currentNode);
             } else {
-                // If the parent is not in our map, it's a top-level root
+                // Se o pai não está no nosso mapa, ele é um nó raiz
                 const existingRoot = roots.find(r => r.unidade === parentName);
                 if (!existingRoot) {
                     const parentSigla = parentNameMatch ? parentNameMatch[2].trim() : null;
@@ -198,117 +258,212 @@
                         unidade: parentName,
                         sigla: parentSigla,
                         fullName: parentName + (parentSigla ? ` - ${parentSigla}` : ''),
-                        children: [node]
+                        children: [currentNode]
                     };
                     roots.push(rootNode);
                 } else {
-                    existingRoot.children.push(node);
+                    existingRoot.children.push(currentNode);
                 }
             }
         });
         
-        // Return only the top-level roots
-        return roots.sort((a, b) => a.unidade.localeCompare(b.unidade));
+        // Remove nós duplicados que se tornaram raízes
+        const finalRoots = roots.filter(root => {
+            const isChildOfAnotherNode = Array.from(nodes.values()).some(node =>
+                node.unidade !== root.unidade && node.children.some(child => child.unidade === root.unidade)
+            );
+            return !isChildOfAnotherNode;
+        });
+        
+        // Ordena os nós para uma exibição consistente
+        const sortNodes = (arr) => {
+            arr.sort((a, b) => a.unidade.localeCompare(b.unidade));
+            arr.forEach(node => {
+                if (node.children.length > 0) {
+                    sortNodes(node.children);
+                }
+            });
+        };
+        sortNodes(finalRoots);
+        
+        return finalRoots;
     };
 
     const hierarchyTree = buildHierarchy(data);
 
-    function renderHierarchy() {
+    /**
+     * Renderiza a hierarquia completa ou os resultados de busca.
+     * @param {Array} items O array de objetos de dados.
+     * @param {boolean} isSearch Indica se os resultados são de uma busca.
+     */
+    function renderResults(items, isSearch = false) {
         const container = document.getElementById('results-container');
-        container.innerHTML = '';
-        
-        function renderNode(node, isNested = false) {
-            const hasChildren = node.children && node.children.length > 0;
-            const toggleHtml = hasChildren
-                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`
-                : `<div class="w-5 h-5 mr-2 text-transparent"></div>`;
+        container.innerHTML = ''; // Limpa os resultados anteriores
+        const clearBtn = document.getElementById('clear-search-btn');
 
-            let html = `
-                <div class="${isNested ? 'bg-white' : 'bg-gray-50'} rounded-lg border border-gray-200 shadow-sm mb-4">
-                    <div class="p-4 flex items-center cursor-pointer" onclick="toggleChildren(this)">
-                        ${toggleHtml}
-                        <h3 class="font-bold text-gray-800">${node.unidade}${node.sigla ? ` - ${node.sigla}` : ''}</h3>
-                    </div>
-            `;
-            
-            if (hasChildren) {
-                html += `<div class="children-container hidden p-4 pt-0 space-y-2">`;
-                node.children.forEach(child => {
-                    html += renderNode(child, true);
-                });
-                html += `</div>`;
-            }
-            html += `</div>`;
-            return html;
+        if (isSearch) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
         }
 
-        hierarchyTree.forEach(node => {
-            container.innerHTML += renderNode(node);
-        });
+        if (items.length === 0) {
+            // Exibe uma mensagem se não houver resultados
+            container.innerHTML = `
+                <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200 shadow-sm text-yellow-800">
+                    <p class="text-center font-normal">Nenhum resultado encontrado. Tente outra busca.</p>
+                </div>
+            `;
+        } else {
+            if (isSearch) {
+                // Renderiza a lista plana de resultados de busca
+                items.forEach(item => {
+                    const cardHtml = `
+                        <div class="bg-brand-light-blue bg-opacity-20 p-6 rounded-xl border border-slate-200 shadow-sm transition-transform transform hover:scale-[1.01]">
+                            <p class="text-xs font-light text-slate-500 mb-1 flex items-center">
+                                ${item.orgao}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </p>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                                <h3 class="text-2xl font-bold text-brand-dark-blue">${item.sigla}</h3>
+                                <p class="text-md font-normal text-slate-600 sm:text-right mt-2 sm:mt-0">${item.unidade}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += cardHtml;
+                });
+            } else {
+                // Renderiza a hierarquia completa
+                function renderNode(node, level = 0) {
+                    const hasChildren = node.children && node.children.length > 0;
+                    const chevronHtml = hasChildren ? `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 hierarchy-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    ` : `<div class="w-5 h-5 mr-2 text-transparent"></div>`;
+
+                    const html = `
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 mb-2">
+                            <div class="p-4 flex items-center cursor-pointer" onclick="toggleChildren(this)">
+                                ${chevronHtml}
+                                <h3 class="font-semibold text-brand-dark-blue">${node.unidade}${node.sigla ? ` - ${node.sigla}` : ''}</h3>
+                            </div>
+                            ${hasChildren ? `<div class="children-container hidden p-4 pt-0 space-y-2">
+                                ${node.children.map(child => renderNode(child, level + 1)).join('')}
+                            </div>` : ''}
+                        </div>
+                    `;
+                    return html;
+                }
+                
+                hierarchyTree.forEach(node => {
+                    container.innerHTML += renderNode(node);
+                });
+            }
+        }
     }
 
+    /**
+     * Expande ou contrai os nós da hierarquia.
+     * @param {HTMLElement} element O elemento clicado.
+     */
     function toggleChildren(element) {
         const parent = element.parentElement;
         const container = parent.querySelector('.children-container');
-        const chevron = element.querySelector('.chevron');
+        const chevron = element.querySelector('.hierarchy-chevron');
         
         if (container) {
             container.classList.toggle('hidden');
             if (chevron) {
-                chevron.classList.toggle('chevron-down');
+                chevron.classList.toggle('hierarchy-chevron-down');
             }
         }
     }
 
-    function renderSearchResults(results) {
-        const container = document.getElementById('results-container');
-        container.innerHTML = '';
-        if (results.length === 0) {
-            container.innerHTML = `
-                <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200 shadow-sm text-yellow-800">
-                    <p class="text-center font-medium">Nenhum resultado encontrado. Tente outra busca.</p>
-                </div>
-            `;
-        } else {
-            results.forEach(item => {
-                container.innerHTML += `
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm transition-transform transform hover:scale-[1.01]">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                            <h3 class="text-2xl font-bold text-blue-600">${item.sigla}</h3>
-                            <p class="text-md font-semibold text-gray-600 sm:text-right mt-2 sm:mt-0">${item.orgao}</p>
-                        </div>
-                        <p class="text-gray-700 mb-2"><strong>Unidade:</strong> ${item.unidade}</p>
-                    </div>
-                `;
-            });
-        }
-    }
-
+    /**
+     * Realiza a busca nos dados com base no valor do campo de entrada.
+     */
     function performSearch() {
-        const input = document.getElementById('search-input').value.toLowerCase();
+        const input = document.getElementById('search-input').value.toLowerCase().trim();
         if (input === '') {
-            renderHierarchy();
+            renderResults(hierarchyTree);
             return;
         }
+
         const filteredData = data.filter(item =>
             item.sigla.toLowerCase().includes(input) ||
             item.orgao.toLowerCase().includes(input) ||
             item.unidade.toLowerCase().includes(input)
         );
-        renderSearchResults(filteredData);
+        renderResults(filteredData, true);
+    }
+    
+    /**
+     * Limpa a busca e retorna à exibição inicial.
+     */
+    function clearSearch() {
+        const searchInput = document.getElementById('search-input');
+        searchInput.value = '';
+        searchInput.focus();
+        document.getElementById('autocomplete-list').classList.add('hidden');
+        renderResults(hierarchyTree);
+    }
+    
+    /**
+     * Filtra e exibe sugestões de autocompletar.
+     */
+    function showSuggestions(input) {
+        const autocompleteList = document.getElementById('autocomplete-list');
+        autocompleteList.innerHTML = '';
+        
+        if (input.length === 0) {
+            autocompleteList.classList.add('hidden');
+            return;
+        }
+
+        const filtered = data.filter(item =>
+            item.sigla.toLowerCase().includes(input) ||
+            item.unidade.toLowerCase().includes(input)
+        ).slice(0, 5); // Limita a 5 sugestões
+
+        if (filtered.length > 0) {
+            filtered.forEach(item => {
+                const suggestionDiv = document.createElement('div');
+                suggestionDiv.classList.add('p-2', 'cursor-pointer', 'autocomplete-item', 'border-b', 'border-gray-200');
+                suggestionDiv.innerHTML = `<span class="font-bold text-brand-dark-blue">${item.sigla}</span> - ${item.unidade}`;
+                suggestionDiv.onclick = () => {
+                    document.getElementById('search-input').value = item.sigla;
+                    autocompleteList.classList.add('hidden');
+                    performSearch();
+                };
+                autocompleteList.appendChild(suggestionDiv);
+            });
+            autocompleteList.classList.remove('hidden');
+        } else {
+            autocompleteList.classList.add('hidden');
+        }
     }
 
-    // Initial render of all data
-    document.addEventListener('DOMContentLoaded', () => {
-        renderHierarchy();
+    // Carrega todos os dados na página ao iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+        renderResults(hierarchyTree);
     });
 
-    // Add search on Enter key press
+    // Adiciona o evento de busca ao pressionar a tecla Enter no campo de busca
     document.getElementById('search-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             performSearch();
+            document.getElementById('autocomplete-list').classList.add('hidden');
         }
     });
+    
+    // Adiciona o evento de input para o autocompletar
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        showSuggestions(e.target.value.toLowerCase().trim());
+    });
+    
 </script>
 
 </body>
